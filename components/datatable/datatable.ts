@@ -919,11 +919,14 @@ export class DataTable implements AfterViewChecked,AfterViewInit,AfterContentIni
             }
             else {
                 if(this.sortMode == 'multiple') {
-                    if(!this.multiSortMeta||!metaKey) {
-                        this.multiSortMeta = [];
+                   if (!this.multiSortMeta || !metaKey) {
+                      let groupSortMeta = [];
+                      if(this.groupField){
+                        groupSortMeta.push(this.multiSortMeta[0]);
+                      }
+                      this.multiSortMeta = groupSortMeta;
                     }
-
-                    this.addSortMeta({field: this.sortField, order: this.sortOrder});
+                    this.addSortMeta({ field: this.sortField, order: this.sortOrder });
                     this.sortMultiple();
                 }
                 else {
@@ -1085,9 +1088,9 @@ export class DataTable implements AfterViewChecked,AfterViewInit,AfterContentIni
         if(this.sortableRowGroup) {
             let targetNode = event.target.nodeName;
             if((targetNode == 'TD' || (targetNode == 'SPAN' && !this.domHandler.hasClass(event.target, 'ui-c')))) {
-                if(this.sortField != this.groupField) {
-                    this.sortField = this.groupField;
-                    this.sortSingle();
+                 if (this.sortField != this.groupField) {
+                    this.multiSortMeta[0].order = -1 * this.multiSortMeta[0].order;
+                    this.sortMultiple();
                 }
                 else {
                     this.sortOrder = -1 * this.sortOrder;
